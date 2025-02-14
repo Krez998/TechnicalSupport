@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TechnicalSupport.Data;
 using TechnicalSupport.Models;
 using TechnicalSupport.Models.DTO;
@@ -6,6 +7,7 @@ using TechnicalSupport.Models.Response;
 
 namespace TechnicalSupport.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -34,7 +36,7 @@ namespace TechnicalSupport.Controllers
         [HttpGet("allExecutors")]
         public IEnumerable<UserResponse> GetAllExecutors()
         {
-            var users = _dataContext.Users.Where(u => u.UserType == UserType.Executor).ToList();
+            var users = _dataContext.Users.Where(u => u.Role == Role.Executor).ToList();
             var executors = new List<UserResponse>();
             foreach (var user in users)
             {
@@ -66,7 +68,7 @@ namespace TechnicalSupport.Controllers
                 Id = newId,
                 Login = createUserDTO.Login,
                 Password = createUserDTO.Password,
-                UserType = createUserDTO.UserType,
+                Role = createUserDTO.UserType,
                 FirstName = createUserDTO.FirstName,
                 LastName = createUserDTO.LastName,
                 Patronymic= createUserDTO.Patronymic,

@@ -18,7 +18,7 @@ namespace TechnicalSupport.Services
                     FirstName = "Вася",
                     LastName = "Пупкин",
                     Patronymic= "Андреевич",
-                    UserType = UserType.User
+                    Role = Role.User
                 },
                 new User
                 {
@@ -28,7 +28,7 @@ namespace TechnicalSupport.Services
                     FirstName = "Тимур",
                     LastName = "Кашменских",
                     Patronymic= "Олегович",
-                    UserType = UserType.Executor
+                    Role = Role.Executor
                 },
                 new User
                 {
@@ -38,7 +38,7 @@ namespace TechnicalSupport.Services
                     FirstName = "Асатбек",
                     LastName = "Рашидов",
                     Patronymic = "Асатбекович",
-                    UserType = UserType.Executor
+                    Role = Role.Executor
                 },
                 new User
                 {
@@ -48,7 +48,7 @@ namespace TechnicalSupport.Services
                     FirstName = "Данис",
                     LastName = "Мингалеев",
                     Patronymic = "Ринатович",
-                    UserType = UserType.Administrator
+                    Role = Role.Admin
                 }
             };
 

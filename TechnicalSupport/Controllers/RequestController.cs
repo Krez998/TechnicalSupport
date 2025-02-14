@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TechnicalSupport.Data;
 using TechnicalSupport.Models;
 using TechnicalSupport.Models.DTO;
@@ -17,6 +18,12 @@ namespace TechnicalSupport.Controllers
             _dataContext = dataContext;
         }
 
+        /// <summary>
+        /// Создает заявку
+        /// </summary>
+        /// <param name="createRequestModel"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "User,Admin")]
         [HttpPost]
         public async Task CreateRequest([FromBody] CreateRequestDTO createRequestModel)
         {
@@ -43,10 +50,11 @@ namespace TechnicalSupport.Controllers
         /// <param name="id"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
-        public async Task<ActionResult> ChangeRequestStatus(int id, int status)
+        [Authorize(Roles = "Executor,Admin")]
+        [HttpPatch("setStatus/{id}")]
+        public async Task<IActionResult> ChangeRequestStatus(int id, int status)
         {
-            var request = _dataContext.Requests.Where(r => r.Id == id).FirstOrDefault();
+            var request = _dataContext.Requests.FirstOrDefault(r => r.Id == id);
             RequestResponse response = new RequestResponse();
 
             if (request != null)
@@ -69,10 +77,17 @@ namespace TechnicalSupport.Controllers
             else
             {
                 return StatusCode(204);
-            }     
+            }
         }
 
-        [HttpPatch("executor/{id}")]
+        /// <summary>
+        /// Добавляет исполнителя к заявке
+        /// </summary>
+        /// <param name="id">ID заявки</param>
+        /// <param name="executorId">ID исполнителя</param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("setExecutor/{id}")]
         public IActionResult SetRequestExecutor(int id, [FromQuery] int executorId)
         {
             var request = _dataContext.Requests.Where(r => r.Id == id).FirstOrDefault();
@@ -98,8 +113,9 @@ namespace TechnicalSupport.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "User,Executor,Admin")]
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetRequest(int id)
+        public async Task<IActionResult> GetRequest(int id)
         {
             RequestResponse response = new RequestResponse();
 
@@ -129,9 +145,7 @@ namespace TechnicalSupport.Controllers
                 return StatusCode(200, response);
             }
             else
-            {
                 return StatusCode(204);
-            }
         }
 
         /// <summary>
@@ -139,6 +153,8 @@ namespace TechnicalSupport.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        //[Authorize]
+        [Authorize(Roles = "User,Executor,Admin")]
         [HttpGet]
         public IEnumerable<Request> GetAll([FromQuery] GetRequestsDTO request)
         {
@@ -157,6 +173,7 @@ namespace TechnicalSupport.Controllers
         /// (Пока не используется) Удаление заявки
         /// </summary>
         /// <param name="id"></param>
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
