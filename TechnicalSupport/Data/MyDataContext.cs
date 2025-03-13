@@ -4,13 +4,13 @@ namespace TechnicalSupport.Data
 {
     public class MyDataContext
     {
-        public List<Request> Requests { get; set; }
-        public List<User> Users { get; set; }
+        //public List<TicketDTO> Tickets { get; set; }
+        //public List<UserDTO> Users { get; set; }
 
-        public MyDataContext()
-        {
-            Requests = new List<Request>();
-            Users = new List<User>();
-        }
+        //public MyDataContext()
+        //{
+        //    Tickets = new List<TicketDTO>();
+        //    Users = new List<UserDTO>();
+        //}
     }
 }

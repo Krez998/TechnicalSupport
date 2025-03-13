@@ -1,9 +1,11 @@
+using DataAccessLayer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TechnicalSupport.Data;
-using TechnicalSupport.Models;
+using TechnicalSupport.Models.Profiles;
 using TechnicalSupport.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,13 +14,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// работает
-builder.Services.AddSingleton<MyDataContext>();
+
+//builder.Services.AddSingleton<MyDataContext>();
 builder.Services.AddSingleton<DataSeeder>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<DataContext>(builder =>
+    builder.UseNpgsql("Host=localhost;Port=5432;Database=test99;Username=postgres;Password=password"));
+
+builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+
+builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(TicketProfile));
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -78,7 +92,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<MyDataContext>();
+    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
     seeder.Seed(context);
 }

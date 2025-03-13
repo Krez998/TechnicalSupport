@@ -1,6 +1,6 @@
-﻿namespace TechnicalSupport.Models.DTO
+﻿namespace TechnicalSupport.Models.TicketModels
 {
-    public class CreateRequestDTO
+    public class CreateTicketRequest
     {
         public int UserId { get; set; }
         public string IssueType { get; set; }

@@ -1,66 +1,44 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Security.Claims;
-using System.Threading;
-using TechnicalSupport.Data;
-using TechnicalSupport.Models.DTO;
-using TechnicalSupport.Models.Response;
 using TechnicalSupport.Services;
 
 namespace TechnicalSupport.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        public MyDataContext _dataContext;
-        private readonly JwtGenerator _jwtGenerator = new();
+        private readonly IAccountService _accountService;
 
-        public AccountsController(MyDataContext dataContext)
+        public AccountsController(IAccountService accountService)
         {
-            _dataContext = dataContext;
+            _accountService = accountService;
         }
 
+        /// <summary>
+        /// Аутентифицирует пользователя
+        /// </summary>
+        /// <param name="login">логин</param>
+        /// <param name="password">пароль</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("/login")]
-        public async Task<IActionResult> Login(string login, string password)
+        public async Task<IActionResult> Login(string login, string password, CancellationToken cancellationToken)
         {
             try
             {
-                var user = _dataContext.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
-
-                if (user == null)
-                    return Unauthorized("Пользователь не найден");
-
-                var token = _jwtGenerator.Generate(user.Login, user.Role.ToString());
-
-                return Ok(new UserDataResponse()
-                {
-                    Token = token,
-                    User = new UserAuthDataResponse()
-                    {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Patronymic = user.Patronymic,
-                        Role = user.Role
-                    }
-                });
+                var data = await _accountService.Login(login, password, cancellationToken);
+                return Ok(data);
             }
-            catch (Exception e)
+            catch (KeyNotFoundException ex)
             {
-                return StatusCode(500, "Произошла ошибка на сервере.");
+                return BadRequest(ex.Message);
             }
-        }
-
-        [Authorize(Roles = "User,Executor")]
-        [HttpGet("/me")]
-        public ActionResult MEEEE(string login, string password)
-        {
-            return Ok(HttpContext.User.Claims?
-                .FirstOrDefault(x => x.Type == ClaimsIdentity.DefaultNameClaimType)?.Value);
+            catch (Exception)
+            {
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
         }
     }
 }

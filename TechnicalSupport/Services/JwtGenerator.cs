@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TechnicalSupport.Services
 {
-    public class JwtGenerator
+    public class JwtGenerator : IJwtGenerator
     {
         public string Generate(string login, string role)
         {
