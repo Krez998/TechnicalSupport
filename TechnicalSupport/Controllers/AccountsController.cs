@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Domain.Accounts.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TechnicalSupport.Services;
+using System.Security.Claims;
 
 namespace TechnicalSupport.Controllers
 {
@@ -8,37 +10,67 @@ namespace TechnicalSupport.Controllers
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountService _accountService;
+        private readonly IMediator _mediator;
 
-        public AccountsController(IAccountService accountService)
+        public AccountsController(IMediator mediator)
         {
-            _accountService = accountService;
+            _mediator = mediator;
         }
 
         /// <summary>
-        /// Аутентифицирует пользователя
+        /// Аутентифицирует пользователя.
         /// </summary>
-        /// <param name="login">логин</param>
-        /// <param name="password">пароль</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="loginQuery">Данные, необходимые для аутентификации пользователя в системе.</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("/login")]
-        public async Task<IActionResult> Login(string login, string password, CancellationToken cancellationToken)
+        [HttpGet("/login")]
+        public async Task<ActionResult<string>> Login([FromQuery] LoginQuery loginQuery)
         {
             try
             {
-                var data = await _accountService.Login(login, password, cancellationToken);
-                return Ok(data);
+                var jwtToken = await _mediator.Send(loginQuery);
+                return Ok(jwtToken);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(exception.Message);
             }
-            catch (Exception)
+        }
+
+        /// <summary>
+        /// Получает UserID пользователя.
+        /// </summary>
+        /// <returns>userId</returns>
+        [Authorize(Roles = "User,Agent,Admin")]
+        [HttpGet("/userId")]
+        public ActionResult<string> GetUserId()
+        {
+            var userId = HttpContext.User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
             {
-                return StatusCode(500, "Внутренняя ошибка сервера");
+                return NotFound("UserID не найден.");
             }
+
+            return Ok(userId);
+        }
+
+        /// <summary>
+        /// Получает имя пользователя.
+        /// </summary>
+        /// <returns>userName</returns>
+        [Authorize]
+        [HttpGet("/username")]
+        public ActionResult<string> GetUserName()
+        {
+            var userName = HttpContext.User.Identity?.Name;
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return NotFound("Имя пользователя не найдено.");
+            }
+
+            return Ok(userName);
         }
     }
 }

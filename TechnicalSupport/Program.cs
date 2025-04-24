@@ -1,12 +1,24 @@
 using DataAccessLayer;
+using Domain.Security;
+using Domain.Tickets.Commands;
+using Domain.Users;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TechnicalSupport.Data;
-using TechnicalSupport.Models.Profiles;
-using TechnicalSupport.Services;
+using FluentValidation;
+using Domain.Tickets.Queries;
+using Microsoft.Extensions.DependencyInjection;
+using Domain.Tickets;
+using Domain.UserTickets.Commands;
+using Domain.Users.Commands;
+using Domain.Users.Queries;
+using Domain.Messages.Commands;
+using Domain.Messages;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,24 +26,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-
-//builder.Services.AddSingleton<MyDataContext>();
-builder.Services.AddSingleton<DataSeeder>();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(builder =>
     builder.UseNpgsql("Host=localhost;Port=5432;Database=test99;Username=postgres;Password=password"));
-
-builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITicketService, TicketService>();
-
-builder.Services.AddAutoMapper(typeof(UserProfile));
-builder.Services.AddAutoMapper(typeof(TicketProfile));
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -55,6 +55,39 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
+//builder.Services.AddSingleton<MyDataContext>();
+builder.Services.AddScoped<DataSeeder>();
+
+// Зависимости
+builder.Services.AddTransient<IJWTProvider, JWTProvider>();
+
+// Валидаторы
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTicketCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ChangeTicketStatusCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<GetTicketQueryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<GetTicketsQueryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<SetTicketAgentCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<GetUserQueryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<SendMessageCommandValidator>();
+
+// Автомаппер
+builder.Services.AddAutoMapper(typeof(UserMapConfig), typeof(TicketMapConfig), typeof(MessageMapConfig));
+
+// Регистрация MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(CreateTicketCommand)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(ChangeTicketStatusCommand)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetTicketQuery)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetTicketsQuery)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(SetTicketAgentCommand)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(CreateUserCommand)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetUserQuery)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetAgentsQuery)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(SendMessageCommand)));
+
 
 builder.Services
     .AddAuthentication(x =>

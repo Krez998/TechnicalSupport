@@ -1,7 +1,7 @@
-﻿//using TechnicalSupport.Data;
-//using TechnicalSupport.Models;
-using DataAccessLayer;
+﻿using DataAccessLayer;
 using DataAccessLayer.Models;
+using Shared.Models.Ticket;
+using Shared.Models.User;
 
 namespace TechnicalSupport.Data
 {
@@ -49,6 +49,7 @@ namespace TechnicalSupport.Data
                 }
             };
 
+
             var chat = new[]
 {
                 new Chat
@@ -64,7 +65,7 @@ namespace TechnicalSupport.Data
                 new Ticket
                 {
                     CreatedAt = DateTime.Now.ToUniversalTime(),
-                    AgentId = null,
+                    //AgentId = null,
                     UserId = 1,
                     ChatId = 1,
                     IssueType = "device",
@@ -77,7 +78,7 @@ namespace TechnicalSupport.Data
                 new Ticket
                 {
                     CreatedAt = DateTime.Now.ToUniversalTime(),
-                    AgentId = 2,
+                    //AgentId = 2,
                     UserId = 1,
                     IssueType = "device",
                     Priority = "высокая",
@@ -89,7 +90,7 @@ namespace TechnicalSupport.Data
                 new Ticket
                 {
                     CreatedAt = DateTime.Now.ToUniversalTime(),
-                    AgentId = 2,
+                    //AgentId = 2,
                     UserId = 1,
                     IssueType = "device",
                     Priority = "высокая",
@@ -101,7 +102,7 @@ namespace TechnicalSupport.Data
                 new Ticket
                 {
                     CreatedAt = DateTime.Now.ToUniversalTime(),
-                    AgentId = 2,
+                    //AgentId = 2,
                     UserId = 1,
                     IssueType = "device",
                     Priority = "средння",
@@ -113,7 +114,7 @@ namespace TechnicalSupport.Data
                 new Ticket
                 {
                     CreatedAt = DateTime.Now.ToUniversalTime(),
-                    AgentId = 3,
+                    //AgentId = 3,
                     UserId = 1,
                     IssueType = "device",
                     Priority = "средння",
@@ -170,8 +171,11 @@ namespace TechnicalSupport.Data
             };
 
             context.Users.AddRange(users);
+            context.SaveChanges();
             context.Tickets.AddRange(tickets);
+            context.SaveChanges();
             context.Chats.AddRange(chat);
+            context.SaveChanges();
             context.Messages.AddRange(messages);
             context.SaveChanges();
             context.Dispose();

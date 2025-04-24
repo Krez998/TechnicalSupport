@@ -1,4 +1,6 @@
-﻿namespace DataAccessLayer.Models
+﻿using Shared.Models.User;
+
+namespace DataAccessLayer.Models
 {
     public class User
     {
@@ -9,5 +11,6 @@
         public string LastName { get; set; }
         public string Patronymic { get; set; }
         public Role Role { get; set; }
+        public ICollection<UserTicket> UserTickets { get; set; }
     }
 }

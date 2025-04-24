@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalSupport", "Technic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{9FA47D54-B8EB-48D0-B0F4-20395A36626D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{520DE763-20ED-4263-9912-87C2D4B27395}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{E2522874-5668-4BDB-8DF6-307B46A70B38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,14 @@ Global
 		{9FA47D54-B8EB-48D0-B0F4-20395A36626D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FA47D54-B8EB-48D0-B0F4-20395A36626D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FA47D54-B8EB-48D0-B0F4-20395A36626D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{520DE763-20ED-4263-9912-87C2D4B27395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{520DE763-20ED-4263-9912-87C2D4B27395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{520DE763-20ED-4263-9912-87C2D4B27395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{520DE763-20ED-4263-9912-87C2D4B27395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2522874-5668-4BDB-8DF6-307B46A70B38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2522874-5668-4BDB-8DF6-307B46A70B38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2522874-5668-4BDB-8DF6-307B46A70B38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2522874-5668-4BDB-8DF6-307B46A70B38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
