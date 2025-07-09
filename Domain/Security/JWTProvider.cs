@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -7,10 +9,17 @@ namespace Domain.Security
 {
     public class JWTProvider : IJWTProvider
     {
+        private readonly DomainSettings _settings;
+
+        public JWTProvider(IOptions<DomainSettings> settings)
+        {
+            _settings = settings.Value;
+        }
+
         public string GetToken(int userId, string login, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var keyval = "78e0723ce1b86912be8ce3e4c9085b90904cdf44960475192ca4d1d50f875bb0";
+            var keyval = _settings.Secret;
             var key = Encoding.ASCII.GetBytes(keyval);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

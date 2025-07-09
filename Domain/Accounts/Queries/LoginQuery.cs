@@ -7,7 +7,7 @@ namespace Domain.Accounts.Queries
     /// </summary>
     public class LoginQuery : IRequest<string>
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public string Login { get; set; } = default!;
+        public string Password { get; set; } = default!;
     }
 }

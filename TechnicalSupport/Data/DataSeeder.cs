@@ -15,6 +15,7 @@ namespace TechnicalSupport.Data
                 {
                     Username = "1",
                     PasswordHash = "1",
+                    PasswordSalt = "******",
                     FirstName = "Вася",
                     LastName = "Пупкин",
                     Patronymic= "Андреевич",
@@ -24,6 +25,7 @@ namespace TechnicalSupport.Data
                 {
                     Username = "2",
                     PasswordHash = "2",
+                    PasswordSalt = "******",
                     FirstName = "Тимур",
                     LastName = "Кашменских",
                     Patronymic= "Олегович",
@@ -33,6 +35,7 @@ namespace TechnicalSupport.Data
                 {
                     Username = "3",
                     PasswordHash = "3",
+                    PasswordSalt = "******",
                     FirstName = "Асатбек",
                     LastName = "Рашидов",
                     Patronymic = "Асатбекович",
@@ -42,6 +45,7 @@ namespace TechnicalSupport.Data
                 {
                     Username = "admin",
                     PasswordHash = "admin",
+                    PasswordSalt = "******",
                     FirstName = "Данис",
                     LastName = "Мингалеев",
                     Patronymic = "Ринатович",

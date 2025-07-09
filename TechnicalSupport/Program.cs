@@ -18,11 +18,21 @@ using Domain.Users.Commands;
 using Domain.Users.Queries;
 using Domain.Messages.Commands;
 using Domain.Messages;
+using TechnicalSupport;
+using Domain;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var appSettings = builder.Configuration.Get<AppSettings>();
+
+// Чтение конфигурации
+builder.Services.Configure<DomainSettings>(builder.Configuration);
+builder.Services.Configure<AppSettings>(builder.Configuration);
+builder.Services.Configure<PasswordHashingSettings>(builder.Configuration.GetSection("PasswordHashing"));
+
+// Инжектирование IOptions<T>
+builder.Services.AddOptions();
 
 builder.Services.AddControllers();
 
@@ -31,7 +41,7 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(builder =>
-    builder.UseNpgsql("Host=localhost;Port=5432;Database=test99;Username=postgres;Password=password"));
+    builder.UseNpgsql(appSettings.DbConnection));
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -104,7 +114,7 @@ builder.Services
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.
-                GetBytes("78e0723ce1b86912be8ce3e4c9085b90904cdf44960475192ca4d1d50f875bb0")),
+                GetBytes(appSettings.Secret)),
             ValidateIssuer = false,
             ValidateAudience = false
         };

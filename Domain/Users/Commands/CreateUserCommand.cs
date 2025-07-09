@@ -8,11 +8,11 @@ namespace Domain.Users.Commands
     /// </summary>
     public class CreateUserCommand : IRequest
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Patronymic { get; set; }
+        public string Login { get; set; } = default!;
+        public string Password { get; set; } = default!;
+        public string FirstName { get; set; } = default!;
+        public string LastName { get; set; } = default!;
+        public string Patronymic { get; set; } = default!;
         public Role Role { get; set; }
     }
 }
