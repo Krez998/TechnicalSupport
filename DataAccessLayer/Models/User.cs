@@ -12,6 +12,10 @@ namespace DataAccessLayer.Models
         public string LastName { get; set; } = default!;
         public string Patronymic { get; set; } = default!;
         public Role Role { get; set; }
-        public ICollection<UserTicket> UserTickets { get; set; } = default!;
+
+
+        public virtual ICollection<Ticket> CreatedTickets { get; set; } = default!;
+        public virtual ICollection<TicketAssignment> AssignedTickets { get; set; } = default!;
+        public virtual ICollection<Message> Messages { get; set; } = default!;
     }
 }

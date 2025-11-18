@@ -1,25 +1,26 @@
 using DataAccessLayer;
+using Domain;
+using Domain.Messages;
+using Domain.Messages.Commands;
 using Domain.Security;
+using Domain.Tickets;
 using Domain.Tickets.Commands;
+using Domain.Tickets.Queries;
 using Domain.Users;
+using Domain.Users.Commands;
+using Domain.Users.Queries;
+using Domain.UserTickets;
+using Domain.UserTickets.Commands;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using TechnicalSupport.Data;
-using FluentValidation;
-using Domain.Tickets.Queries;
-using Microsoft.Extensions.DependencyInjection;
-using Domain.Tickets;
-using Domain.UserTickets.Commands;
-using Domain.Users.Commands;
-using Domain.Users.Queries;
-using Domain.Messages.Commands;
-using Domain.Messages;
 using TechnicalSupport;
-using Domain;
+using TechnicalSupport.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,7 +68,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-//builder.Services.AddSingleton<MyDataContext>();
 builder.Services.AddScoped<DataSeeder>();
 
 // Зависимости
@@ -83,9 +83,10 @@ builder.Services.AddValidatorsFromAssemblyContaining<SetTicketAgentCommandValida
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<GetUserQueryValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<SendMessageCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateChatCommandValidator>();
 
 // Автомаппер
-builder.Services.AddAutoMapper(typeof(UserMapConfig), typeof(TicketMapConfig), typeof(MessageMapConfig));
+builder.Services.AddAutoMapper(typeof(UserMapConfig), typeof(TicketMapConfig), typeof(TicketAssignmentMapConfig), typeof(MessageMapConfig));
 
 // Регистрация MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(CreateTicketCommand)));
@@ -97,6 +98,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(ty
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetUserQuery)));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetAgentsQuery)));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(SendMessageCommand)));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(CreateChatCommand)));
 
 
 builder.Services
@@ -136,8 +138,13 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<DataContext>();
-    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-    seeder.Seed(context);
+
+    // Проверяет, есть ли уже данные
+    if (!context.Users.Any())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+        seeder.Seed(context);
+    }
 }
 
 

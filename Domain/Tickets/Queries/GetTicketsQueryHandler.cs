@@ -25,7 +25,7 @@ namespace Domain.Tickets.Queries
                 query = query.Where(r => r.Status == request.Status);
 
             if (request.IsShowNotAssigned)
-                query = query.Where(r => r.UserTickets.Count == 0);
+                query = query.Where(r => r.Assignments.Count == 0);
 
             var tickets = await query.ToListAsync(cancellationToken);
 

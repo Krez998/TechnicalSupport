@@ -24,8 +24,8 @@ namespace Domain.Tickets.Queries
         {
             var ticket = await _dataContext.Tickets
                 .AsNoTracking()
-                .Include(t => t.UserTickets)
-                .ThenInclude(t => t.User)
+                .Include(t => t.Assignments)
+                .ThenInclude(t => t.Assignee)
                 .FirstOrDefaultAsync(ticket => ticket.Id == request.Id, cancellationToken)
                 ?? throw new NotFoundException($"Заявка с идентификатором {request.Id} не найдена");
 
@@ -37,15 +37,15 @@ namespace Domain.Tickets.Queries
             var ticketDto = new TicketDto
             {
                 Id = ticket.Id,
-                UserId = ticket.UserId,
+                UserId = ticket.CreatedById,
                 Title = ticket.Title,
                 Description = ticket.Description,
-                Agents = ticket.UserTickets.Select(e => new AgentDto
+                Agents = ticket.Assignments.Select(e => new AgentDto
                 {
-                    UserId = e.User.Id,
-                    FirstName = e.User.FirstName,
-                    LastName = e.User.LastName,
-                    Patronymic = e.User.Patronymic
+                    UserId = e.Assignee.Id,
+                    FirstName = e.Assignee.FirstName,
+                    LastName = e.Assignee.LastName,
+                    Patronymic = e.Assignee.Patronymic
                 }).ToList(),
                 ChatId = ticket.ChatId,
                 Messages = messages.Select(m => new MessageDto

@@ -32,8 +32,8 @@ namespace Domain.UserTickets.Commands
                 ?? throw new NotFoundException($"Пользователя с идентификатором {request.AgentId} не существует.");
 
             ticket.Status = TicketStatus.Assigned;
-            var userTicket = _mapper.Map<UserTicket>(request);
-            await _dataContext.UserTickets.AddAsync(userTicket, cancellationToken);
+            var ticketAssignment = _mapper.Map<TicketAssignment>(request);
+            await _dataContext.TicketAssignments.AddAsync(ticketAssignment, cancellationToken);
             await _dataContext.SaveChangesAsync(cancellationToken);
         }
     }

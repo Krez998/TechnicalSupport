@@ -28,5 +28,18 @@ namespace TechnicalSupport.Controllers
             await _mediator.Send(sendMessageCommand);
             return Ok();
         }
+
+        /// <summary>
+        /// Создает чат.
+        /// </summary>
+        /// <param name="createChatCommand"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "User,Agent,Admin")]
+        [HttpPost("createChat")]
+        public async Task<IActionResult> CreateChat([FromBody] CreateChatCommand createChatCommand)
+        {
+            var chatId = await _mediator.Send(createChatCommand);
+            return Ok(chatId);
+        }
     }
 }

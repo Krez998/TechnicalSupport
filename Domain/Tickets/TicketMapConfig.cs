@@ -10,7 +10,7 @@ namespace Domain.Tickets
         public TicketMapConfig()
         {
             CreateMap<CreateTicketCommand, Ticket>()
-                .ForMember(t => t.UserId, expression => expression.MapFrom(create => create.UserId))
+                .ForMember(t => t.CreatedById, expression => expression.MapFrom(create => create.UserId))
                 .ForMember(t => t.IssueType, expression => expression.MapFrom(create => create.IssueType))
                 .ForMember(t => t.Priority, expression => expression.MapFrom(create => create.Priority))
                 .ForMember(t => t.Title, expression => expression.MapFrom(create => create.Title))

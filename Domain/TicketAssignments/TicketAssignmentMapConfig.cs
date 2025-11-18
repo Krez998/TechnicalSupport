@@ -4,13 +4,13 @@ using Domain.UserTickets.Commands;
 
 namespace Domain.UserTickets
 {
-    public class UserTicketMapConfig : Profile
+    public class TicketAssignmentMapConfig : Profile
     {
-        public UserTicketMapConfig()
+        public TicketAssignmentMapConfig()
         {
-            CreateMap<SetTicketAgentCommand, UserTicket>()
+            CreateMap<SetTicketAgentCommand, TicketAssignment>()
                 .ForMember(ut => ut.TicketId, expression => expression.MapFrom(command => command.TicketId))
-                .ForMember(ut => ut.UserId, expression => expression.MapFrom(command => command.AgentId))
+                .ForMember(ut => ut.AssigneeId, expression => expression.MapFrom(command => command.AgentId))
                 .ReverseMap();
         }
     }

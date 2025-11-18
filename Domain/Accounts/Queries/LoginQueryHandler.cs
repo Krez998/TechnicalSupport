@@ -41,13 +41,17 @@ namespace Domain.Accounts.Queries
         }
 
         private bool VerifyPassword(string enteredPassword, string storedHash, string storedSalt)
-        {           
+        {
             try
             {
                 if (_hashingSettings.Algorithm == "BCrypt")
                     return BCrypt.Net.BCrypt.Verify(enteredPassword, storedHash);
 
                 // PBKDF2 по умолчанию
+                // Проверяет, является ли соль валидной Base-64 строкой
+                if (string.IsNullOrEmpty(storedSalt) || !IsBase64String(storedSalt))
+                    return false;
+
                 byte[] salt = Convert.FromBase64String(storedSalt);
                 byte[] hashToVerify = KeyDerivation.Pbkdf2(
                     password: enteredPassword,
@@ -56,7 +60,31 @@ namespace Domain.Accounts.Queries
                     iterationCount: _hashingSettings.Iterations,
                     numBytesRequested: _hashingSettings.KeySize
                 );
-                return Convert.ToBase64String(hashToVerify) == storedHash;
+
+                var result = Convert.ToBase64String(hashToVerify);
+
+                return result == storedHash;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Вспомогательный метод для проверки Base-64 строки.
+        /// </summary>
+        /// <param name="base64"></param>
+        /// <returns></returns>
+        private bool IsBase64String(string base64)
+        {
+            if (string.IsNullOrEmpty(base64) || base64.Length % 4 != 0)
+                return false;
+
+            try
+            {
+                Convert.FromBase64String(base64);
+                return true;
             }
             catch
             {
