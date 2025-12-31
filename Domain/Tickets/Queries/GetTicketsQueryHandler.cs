@@ -21,8 +21,14 @@ namespace Domain.Tickets.Queries
         {
             var query = _dataContext.Tickets.AsNoTracking().AsQueryable();
 
-            if (request.Status != null)
-                query = query.Where(r => r.Status == request.Status);
+            if (request.UserId != null)
+                query = query.Where(t => t.CreatedById == request.UserId);
+
+            //if (request.Status != null)
+            //    query = query.Where(r => r.Status == request.Status);
+
+            if(!request.IsShowClosed)
+                query = query.Where(t => t.Status != TicketStatus.Closed);
 
             if (request.IsShowNotAssigned)
                 query = query.Where(r => r.Assignments.Count == 0);

@@ -13,16 +13,19 @@ namespace TechnicalSupport.Data
     /// </summary>
     public class PasswordHasher
     {
+        /// <summary>
+        /// Генерирует случайную соль и хеш.
+        /// </summary>
+        /// <param name="password">Пароль.</param>
+        /// <returns></returns>
         public (string Hash, string Salt) HashPassword(string password)
         {
-            // Генерирует случайную соль
             byte[] salt = new byte[16];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
             }
 
-            // Генерирует хеш
             byte[] hash = KeyDerivation.Pbkdf2(
                 password: password,
                 salt: salt,
@@ -53,10 +56,10 @@ namespace TechnicalSupport.Data
             if (context.Users.Any() || context.Tickets.Any())
                 return;
 
-            // Генерируем реальные хеши и соли
             var user1Hash = _passwordHasher.HashPassword("1");
             var user2Hash = _passwordHasher.HashPassword("2");
-            var user3Hash = _passwordHasher.HashPassword("3");
+            var agent1Hash = _passwordHasher.HashPassword("3");
+            var agent2Hash = _passwordHasher.HashPassword("4");
             var adminHash = _passwordHasher.HashPassword("admin");
 
             var users = new[]
@@ -69,9 +72,9 @@ namespace TechnicalSupport.Data
                     /// Либо только через BCrypt
                     /// PasswordHash = BCrypt.Net.BCrypt.HashPassword("1"),
                     /// PasswordSalt = "", // Пустая строка или null, так как не используется
-                    FirstName = "Вася",
-                    LastName = "Пупкин",
-                    Patronymic= "Андреевич",
+                    FirstName = "Кирилл",
+                    LastName = "Овчинников",
+                    Patronymic= "Владимирович",
                     Role = Role.User
                 },
                 new User
@@ -79,6 +82,16 @@ namespace TechnicalSupport.Data
                     Username = "2",
                     PasswordHash = user2Hash.Hash,
                     PasswordSalt = user2Hash.Salt,
+                    FirstName = "Анна",
+                    LastName = "Петрова",
+                    Patronymic= "Данииловна",
+                    Role = Role.User
+                },
+                new User
+                {
+                    Username = "3",
+                    PasswordHash = agent1Hash.Hash,
+                    PasswordSalt = agent1Hash.Salt,
                     FirstName = "Тимур",
                     LastName = "Кашменских",
                     Patronymic= "Олегович",
@@ -86,12 +99,12 @@ namespace TechnicalSupport.Data
                 },
                 new User
                 {
-                    Username = "3",
-                    PasswordHash = user3Hash.Hash,
-                    PasswordSalt = user3Hash.Salt,
-                    FirstName = "Асатбек",
-                    LastName = "Рашидов",
-                    Patronymic = "Асатбекович",
+                    Username = "4",
+                    PasswordHash = agent2Hash.Hash,
+                    PasswordSalt = agent2Hash.Salt,
+                    FirstName = "Иван",
+                    LastName = "Васильев",
+                    Patronymic = "Павлович",
                     Role = Role.Agent
                 },
                 new User
@@ -121,6 +134,7 @@ namespace TechnicalSupport.Data
             {
                 new Ticket
                 {
+                    Id = 5276840,
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     //AgentId = null,
                     CreatedById = 1,
@@ -134,6 +148,7 @@ namespace TechnicalSupport.Data
                 },
                 new Ticket
                 {
+                    Id = 5276841,
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     //AgentId = 2,
                     CreatedById = 1,
@@ -146,6 +161,7 @@ namespace TechnicalSupport.Data
                 },
                 new Ticket
                 {
+                    Id = 5276842,
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     //AgentId = 2,
                     CreatedById = 1,
@@ -158,6 +174,7 @@ namespace TechnicalSupport.Data
                 },
                 new Ticket
                 {
+                    Id = 5276843,
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     //AgentId = 2,
                     CreatedById = 1,
@@ -170,6 +187,7 @@ namespace TechnicalSupport.Data
                 },
                 new Ticket
                 {
+                    Id = 5276844,
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     //AgentId = 3,
                     CreatedById = 1,

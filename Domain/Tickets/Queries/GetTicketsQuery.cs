@@ -8,7 +8,9 @@ namespace Domain.Tickets.Queries
     /// </summary>
     public class GetTicketsQuery : IRequest<IEnumerable<TicketDto>>
     {
-        public TicketStatus? Status { get; set; }
+        public int? UserId { get; set; }
+        //public TicketStatus? Status { get; set; }
+        public bool IsShowClosed { get; set; }
         public bool IsShowNotAssigned { get; set; }
     }
 }

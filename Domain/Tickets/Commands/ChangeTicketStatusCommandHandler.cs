@@ -21,7 +21,6 @@ namespace Domain.Tickets.Commands
         public async Task<TicketDto> Handle(ChangeTicketStatusCommand request, CancellationToken cancellationToken)
         {
             var ticket = await _dataContext.Tickets
-                .AsNoTracking()
                 .FirstOrDefaultAsync(ticket => ticket.Id == request.Id, cancellationToken)
                 ?? throw new NotFoundException($"Заявка с идентификатором {request.Id} не найдена");
 
